@@ -1,40 +1,71 @@
+<link rel="stylesheet" href="/css/main.css">
+
 <nav id="navbar">
-    <div id="navbar-logo">
-        <img src="/src/logo.png" alt="Logo">
+  <div id="navbar-logo">
+    <img src="/src/logo.png" alt="Logo">
+  </div>
+
+  <div id="navbar-links">
+    <a href="/index.html">Home</a>
+    <a href="/html/browse_events.html">Browse Events</a>
+    <div class="dropdown">
+      <a href="#" class="dropdown-toggle">Resources ▾</a>
+      <div class="dropdown-menu">
+        <a href="/html/resources_maps.html">Map</a>
+        <a href="/html/resources_guide.html">Guide</a>
+      </div>
     </div>
 
-    <div id="navbar-links">
-        <a href="/index.html">Home</a>
-        <a href="/html/browse_events.html">Browse Events</a>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle">Resources ▾</a>
-            <div class="dropdown-menu">
-                <a href="/html/resources_maps.html">Map</a>
-                <a href="/html/resources_guide.html">Guide</a>
-            </div>
-        </div>
-
-        <a href="/html/profile_rewards.html">Profile</a>
-    </div>
+    <!-- This is now your popup trigger -->
+    <a href="#" id="profileBtn">Profile</a>
+  </div>
 </nav>
-
 
 <!-- NOT SIGNED IN BAR -->
 <div class="progress-container" id="not-signedin-progressbar">
-    <div id="progress-bar">
-        <div id="progress-fill"></div>
-        <span id="point-text">Sign in to redeem discounts</span>
-        <div id="runner">🏃‍➡️</div>
-    </div>
+  <div id="progress-bar">
+    <div id="progress-fill"></div>
+    <span id="point-text">Sign in to redeem discounts</span>
+    <div id="runner">🏃‍➡️</div>
+  </div>
 </div>
+
 
 <!-- SIGNED IN BAR -->
 <div class="progress-container" id="signedin-progressbar">
-    <div id="progress-bar">
-        <div id="progress-fill" class="progress-done"></div>
-        <span id="point-text"></span>
-        <div id="runner">🏃‍➡️</div>
-    </div>
+  <div id="progress-bar">
+    <div id="progress-fill" class="progress-done"></div>
+    <span id="point-text"></span>
+    <div id="runner">🏃‍➡️</div>
+  </div>
 </div>
 
 <script src="/js/rewards_logic.js"></script>
+
+<!-- POPUP SIGNUP/LOGIN -->
+<div id="popupContainer">
+  <div class="auth-popup">
+    <span id="closePopup" class="close-btn">&times;</span>
+    <form id="loginForm">
+      <h1>Welcome Back</h1>
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <a href="#">Forgot password?</a>
+      <button type="submit">Sign In</button>
+      <p style="text-align:center;margin-top:15px;">Don’t have an account? 
+        <a href="#" id="showSignup">Sign up</a>
+      </p>
+    </form>
+
+    <form id="signupForm" style="display:none;">
+      <h1>Create Account</h1>
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Sign Up</button>
+      <p style="text-align:center;margin-top:15px;">Already have an account? 
+        <a href="#" id="showLogin">Sign in</a>
+      </p>
+    </form>
+  </div>
+</div>
