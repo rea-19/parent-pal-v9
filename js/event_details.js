@@ -1,6 +1,30 @@
-
 function getQueryParam(name) {
     return new URLSearchParams(window.location.search).get(name);
+}
+
+// Helper function to generate filter match items with icons and correct labels
+function generateFilterMatchItem(iconClass, value, defaultLabel) {
+    // Use the actual value if available, otherwise use a placeholder text based on the default
+    const displayValue = value || defaultLabel;
+    
+    // Quick and dirty way to get the short date for the pill from the full datetime string
+    let pillText = displayValue;
+    if (iconClass === 'fa-calendar-day' && displayValue) {
+        // Assuming formatteddatetime is something like "Thursday, 13 October 2025, 9:00 AM"
+        // We'll just show the date part from the image: "13 October"
+        const dateMatch = displayValue.match(/, (\d+ \w+)/);
+        pillText = dateMatch ? dateMatch[1] : displayValue;
+    }
+    
+    // Custom logic to match the image's pill content
+    if (iconClass === 'fa-sack-dollar') pillText = pillText.replace('N/A', 'Free');
+
+    return `
+        <div class="filter-match-item">
+            <i class="fa-solid ${iconClass}"></i>
+            <span>${pillText}</span>
+        </div>
+    `;
 }
 
 $(document).ready(function() {
@@ -31,66 +55,96 @@ $(document).ready(function() {
             );
 
             if (record) {
-                // Default: no booking required
-                let bookingButton = `<button class = "booking-button"> No Booking Required </button>`;
-
-                // If infants-and-toddlers dataset has a booking field
+                // Get the booking URL if it exists (reusing your original logic)
+                let bookingUrl = null;
                 if (record.booking) {
-                    // Extract <a href="..."> link
                     const match = record.booking.match(/href=["']([^"']+)["']/);
                     if (match && match[1]) {
-                        bookingButton = `
-                        <a href="${match[1]}" target="_blank">
-                                            <button class = "booking-button"> Book Now </button>
-                                        </a>`;
-                    } else {
-                        bookingButton = `<button class= "booking-button" >Booking Info Unavailable</button>`;
+                        bookingUrl = match[1];
                     }
                 }
+                
+                // The Elfsight reviews widget is still included in the main HTML 
+                // using the div with class "reviews", so the dynamic review box 
+                // that was previously hardcoded is now removed as requested.
 
                 $("#event-details").html(`
-                    <section class="event-details">
-                        <div class = "event-box">
-                        <div class="event-image" style="background-image: url('${record.eventimage || "https://source.unsplash.com/featured/?event,library"}');">
-                                <h2 class = "event-heading">${record.subject}</h2>
-                        </div>
-                        
-                            <p class="event-description">${record.description} || "No description for this event."}</p>
+                    <div class="page-content-wrapper">
+                        <div class="event-details-container">
+                            <div class="main-event-content">
+                                <div class="event-image-header" style="background-image: url('${record.eventimage || "https://source.unsplash.com/featured/?event,library"}');">
+                                    <div class="header-overlay">
+                                        <h2 class="event-heading">${record.subject}</h2>
+                                    </div>
+                                </div>
 
-                            <div class= "event-info">
-                                <p class="filter"><strong>Date:</strong> ${record.formatteddatetime}</p>
-                                <p class="filter"><strong>Location:</strong> ${record.location}</p>
-                                <p class="filter"><strong>Age:</strong> ${record.age}</p>
-                                <p class="filter"><strong>Event Type:</strong> ${record.primaryeventtype || "N/A"}</p>
-                                <p class="filter"><strong>Cost:</strong> ${record.cost || "N/A"}</p>
+                                <div class="about-event-box">
+                                    <h3 class="about-the-event-title">About the event</h3>
+                                    <p class="event-description">${record.description || "No description for this event."}</p>
+                                </div>
+                                
+                                <div class="event-actions-bar">
+                                    <button class="action-button primary" id="book-now-btn">
+                                        <i class="fa-solid fa-book-open"></i> Book Now 
+                                    </button>
+                                    <button class="action-button secondary" id="save-event-btn">
+                                        <i class="fa-solid fa-bookmark"></i> Save Event 
+                                    </button>
+                                    <button class="action-button tertiary" id="copy-address-btn">
+                                        <i class="fa-solid fa-copy"></i> Copy Address 
+                                    </button>
+                                </div>
                             </div>
 
-
-                            <div class="event-actions">
-                <button id="save-booked">Save for Attendance</button>
-                <button id="save-favourite">Favourite</button>
-            </div>
-                    </section>
+                            <div class="filter-matches-panel">
+                                <h4>Filter matches</h4>
+                                <div class="filter-match-list">
+                                    ${generateFilterMatchItem('fa-location-dot', record.location, 'Chermside Library')}
+                                    ${generateFilterMatchItem('fa-palette', record.primaryeventtype, 'Creative')}
+                                    ${generateFilterMatchItem('fa-calendar-day', record.formatteddatetime, '13 October')}
+                                    ${generateFilterMatchItem('fa-child', record.age, '3 - 5 years')}
+                                    ${generateFilterMatchItem('fa-sack-dollar', record.cost, 'Free')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 `);
 
-            // ------------------ BUTTON FUNCTIONALITY ------------------
+                // ------------------ BUTTON FUNCTIONALITY ------------------
 
-// Save event to localStorage (Booked)
-$("#save-booked").click(function() {
-    const booked = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
-    booked.push(record);
-    localStorage.setItem("bookedEvents", JSON.stringify(booked));
-    alert("Event saved to Booked Events!");
-});
+                // Book Now button functionality (using existing logic)
+                $("#book-now-btn").click(function() {
+                    if (bookingUrl) {
+                        window.open(bookingUrl, '_blank');
+                    } else {
+                        alert("Please visit Eventbrite or call the library to reserve your place.");
+                    }
+                });
 
-// Save event to localStorage (Favourites)
-$("#save-favourite").click(function() {
-    const fav = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
-    fav.push(record);
-    localStorage.setItem("favouriteEvents", JSON.stringify(fav));
-    alert("Event saved to Favourites!");
-});
+                // Save Event (repurposed from the original 'Save for Attendance'/'Save Booked')
+                $("#save-event-btn").click(function() {
+                    const saved = JSON.parse(localStorage.getItem("savedEvents") || "[]");
+                    saved.push(record);
+                    localStorage.setItem("savedEvents", JSON.stringify(saved));
+                    alert("Event saved!");
+                });
 
+                // Copy Address
+                $("#copy-address-btn").click(function() {
+                    navigator.clipboard.writeText(record.location || "Location not available").then(() => {
+                        alert("Address copied to clipboard!");
+                    }).catch(err => {
+                        console.error('Could not copy text: ', err);
+                    });
+                });
+                
+                // Original legacy buttons mapping to the new ones
+                $("#save-booked").click(function() {
+                    $("#save-event-btn").click();
+                });
+                $("#save-favourite").click(function() {
+                    $("#save-event-btn").click(); 
+                });
 
             } else {
                 $("#event-details").html("<p>Event not found.</p>");
