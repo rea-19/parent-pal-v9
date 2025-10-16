@@ -994,7 +994,6 @@ body {
     transform: translateY(-5px);
 }
 
-<<<<<<< HEAD
 
 /* Membership Card Interactivity */
 
@@ -1064,7 +1063,6 @@ body {
 
 
 /* map section */
-=======
 /* Rewards Section Steps (How To) */
 .rewards-row {
     display: flex;
@@ -1109,7 +1107,6 @@ body {
 /* --- 9. MAP AND CONTROLS --- */
 /* ========================================= */
 
->>>>>>> 3e412ce01d78cf6154c282740c4c13aeb616c57b
 #map-container {
     height: 100vh;
     width: 100vw;
