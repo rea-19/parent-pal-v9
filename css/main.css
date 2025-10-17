@@ -1111,11 +1111,11 @@ body {
     height: 100vh;
     width: 100vw;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding: 1rem;
     background-color: #f9f9f9;
-    border-radius: 12px;
+    border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     flex-wrap: wrap;
 }
@@ -1130,14 +1130,15 @@ body {
 
 #controls {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 4rem;
+    right: 2rem;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     width: 250px;
+    height: 95%;
 }
 
 .filter-icon {
@@ -1149,8 +1150,9 @@ body {
 .filter-button {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem; 
+    padding: 2rem 1rem;
     border: 2px solid var(--primary-color);
     background-color: white;
     color: var(--primary-color);
