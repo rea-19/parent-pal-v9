@@ -1,4 +1,4 @@
-// js/home.js
+// js/homepage.js
 
 let slideImages = []; // Array to hold the 7 dynamically loaded image URLs
 let slideIndex = 0;

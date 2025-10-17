@@ -1,4 +1,3 @@
-
 // Load header
 fetch("/html/include/header.html")
   .then(res => res.text())
@@ -101,4 +100,3 @@ function initPopup() {
     });
   });
 }
-
