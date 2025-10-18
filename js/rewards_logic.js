@@ -77,3 +77,9 @@ waitForProgressBar((progress) => {
   // INITIALIZE
   updateProgressBar();
 });
+
+// Membership card flipped
+function flipCard() {
+  const card = document.getElementById("membershipCard");
+  card.classList.toggle("flipped");
+}
