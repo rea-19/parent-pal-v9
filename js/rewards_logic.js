@@ -1,7 +1,7 @@
 //AI (ChatGPT) has been used with this code, for the following purposes: 
 // 1. to simplify the code and remove irrelevant code
-// 2. to error-check or correct, or to give advice on where to check for problems
-// 3. to add base comments to explain what I'm doing. 
+// 2. to error-check or debug, or to give advice on where to check for problems
+// 3. to add base comments to explain what I'm doing. remove^^^^^^
 // All base code is done by hand. AI changes have been changed and edited and have been used to improve, not to do the code itself. 
 
 
