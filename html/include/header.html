@@ -17,12 +17,12 @@
       </div>
     </div>
 
-    <!-- Popup Trigger -->
     <a href="#" id="profileBtn">Profile</a>
+    <a href="#" id="logoutBtn" style="display:none;">Logout</a>
   </div>
 </nav>
 
-<!-- NOT SIGNED IN BAR -->
+<!-- PROGRESS BARS -->
 <div class="progress-container" id="not-signedin-progressbar">
   <div id="progress-bar">
     <div id="progress-fill"></div>
@@ -31,16 +31,15 @@
   </div>
 </div>
 
-<!-- SIGNED IN BAR (hidden until login) -->
 <div class="progress-container" id="signedin-progressbar" style="display:none;">
   <div id="progress-bar">
     <div id="progress-fill" class="progress-done"></div>
-    <span id="point-text"></span>
+    <span id="point-text">You’ve earned 120 points 🎉</span>
     <div id="runner">🏃‍➡️</div>
   </div>
 </div>
 
-<script src="/js/rewards_logic.js"></script>
+<script src="/js/header_footer.js"></script>
 
 <!-- POPUP SIGNUP/LOGIN -->
 <div id="popupContainer">
