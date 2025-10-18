@@ -16,16 +16,58 @@ function loadHeader() {
 // --- Initialize Header ---
 function initHeader() {
   const loggedIn = localStorage.getItem("loggedIn") === "true";
-  const logoutBtn = document.getElementById("logoutBtn");
+  const navbarLinks = document.getElementById("navbar-links");
   const profileBtn = document.getElementById("profileBtn");
 
+  // Remove old dropdown if exists
+  const oldDropdown = document.querySelector(".profile-dropdown");
+  if (oldDropdown) oldDropdown.remove();
+
   if (loggedIn) {
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    if (profileBtn) profileBtn.href = "/html/profile_rewards.html";
-    if (profileBtn) profileBtn.onclick = null; // remove any old click handlers
+    // Hide regular profile link
+    if (profileBtn) profileBtn.style.display = "none";
+
+    // Create dropdown
+    const dropdown = document.createElement("div");
+    dropdown.classList.add("dropdown", "profile-dropdown");
+
+    dropdown.innerHTML = `
+      <a href="#" class="dropdown-toggle">Profile ▾</a>
+      <div class="dropdown-menu">
+        <a href="/html/profile_rewards.html">Rewards</a>
+        <a href="/html/profile_my_events.html">My Events</a>
+        <a href="#" id="logoutBtnDropdown">Log Out</a>
+      </div>
+    `;
+
+    if (navbarLinks) navbarLinks.appendChild(dropdown);
+
+    // Dropdown toggle
+    const toggle = dropdown.querySelector(".dropdown-toggle");
+    const menu = dropdown.querySelector(".dropdown-menu");
+    toggle.onclick = e => {
+      e.preventDefault();
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    };
+
+    // Logout inside dropdown
+    const logoutBtnDropdown = document.getElementById("logoutBtnDropdown");
+    if (logoutBtnDropdown) {
+      logoutBtnDropdown.onclick = e => {
+        e.preventDefault();
+        if (confirm("Log out?")) {
+          localStorage.removeItem("loggedIn");
+          localStorage.removeItem("loggedInUser");
+          alert("Logged out!");
+          loadHeader(); // Reload header
+        }
+      };
+    }
+
   } else {
-    if (logoutBtn) logoutBtn.style.display = "none";
+    // Logged out: show normal profile button
     if (profileBtn) {
+      profileBtn.style.display = "inline-block";
       profileBtn.href = "#";
       profileBtn.style.cursor = "pointer";
       profileBtn.onclick = e => {
@@ -40,23 +82,13 @@ function initHeader() {
         signupForm.style.display = "none";
       };
     }
-    initPopup(); // Only for logged-out users
+
+    initPopup(); // Popup logic for logged-out users
   }
 
   updateProgressBar();
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", e => {
-      e.preventDefault();
-      if (confirm("Log out?")) {
-        localStorage.removeItem("loggedIn");
-        localStorage.removeItem("loggedInUser");
-        alert("Logged out!");
-        loadHeader(); // Reload header after logout
-      }
-    });
-  }
 }
+
 
 
 // --- Update Progress Bar ---
