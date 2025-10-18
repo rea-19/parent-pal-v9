@@ -735,19 +735,33 @@ color: var(--secondary-color);
     margin-top: 2rem;
 }
 
+/* Each reward card box */
 .reward-card {
-    background: var(--background-color);
-    border-radius: 12px;
-    width: 150px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.2s ease;
+  border: 2px solid #8FC73B;   /* green border */
+  border-radius: 12px;
+  width: 150px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--background-color);
 }
 
+/* Hover effect to lift slightly */
 .reward-card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(143, 199, 59, 0.25); /* soft green glow */
 }
 
+/* Buttons inside the reward cards */
+.goal-btn {
+  background-color: #8FC73B;  /* same green as border */
+  color: white;
+  border: none;               /* no outline */
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
 /* Membership Card Interactivity */
 
