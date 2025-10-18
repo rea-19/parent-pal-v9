@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+  loadHeader();
+});
+
 // --- Load Header ---
 function loadHeader() {
   fetch("/html/include/header.html")
@@ -18,9 +22,24 @@ function initHeader() {
   if (loggedIn) {
     if (logoutBtn) logoutBtn.style.display = "inline-block";
     if (profileBtn) profileBtn.href = "/html/profile_rewards.html";
+    if (profileBtn) profileBtn.onclick = null; // remove any old click handlers
   } else {
     if (logoutBtn) logoutBtn.style.display = "none";
-    if (profileBtn) profileBtn.href = "#";
+    if (profileBtn) {
+      profileBtn.href = "#";
+      profileBtn.style.cursor = "pointer";
+      profileBtn.onclick = e => {
+        e.preventDefault();
+        const popup = document.getElementById("popupContainer");
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        if (!popup || !loginForm || !signupForm) return;
+
+        popup.style.display = "flex";
+        loginForm.style.display = "flex";
+        signupForm.style.display = "none";
+      };
+    }
     initPopup(); // Only for logged-out users
   }
 
@@ -39,6 +58,7 @@ function initHeader() {
   }
 }
 
+
 // --- Update Progress Bar ---
 function updateProgressBar() {
   const loggedIn = localStorage.getItem("loggedIn") === "true";
@@ -47,28 +67,22 @@ function updateProgressBar() {
 
   if (!notSignedInBar || !signedInBar) return;
 
-  // Reset click handlers by cloning nodes
-  const newNotSignedInBar = notSignedInBar.cloneNode(true);
-  const newSignedInBar = signedInBar.cloneNode(true);
-  notSignedInBar.replaceWith(newNotSignedInBar);
-  signedInBar.replaceWith(newSignedInBar);
-
   if (loggedIn) {
-    newNotSignedInBar.style.display = "none";
-    newSignedInBar.style.display = "block";
+    notSignedInBar.style.display = "none";
+    signedInBar.style.display = "block";
 
-    // Redirect to profile page when signed in
-    newSignedInBar.style.cursor = "pointer";
-    newSignedInBar.addEventListener("click", () => {
+    // Click redirects to profile page
+    signedInBar.style.cursor = "pointer";
+    signedInBar.onclick = () => {
       window.location.href = "/html/profile_rewards.html";
-    });
+    };
   } else {
-    newSignedInBar.style.display = "none";
-    newNotSignedInBar.style.display = "block";
+    signedInBar.style.display = "none";
+    notSignedInBar.style.display = "block";
 
-    // Show popup when not signed in
-    newNotSignedInBar.style.cursor = "pointer";
-    newNotSignedInBar.addEventListener("click", () => {
+    // Click opens login/signup popup
+    notSignedInBar.style.cursor = "pointer";
+    notSignedInBar.onclick = () => {
       const popup = document.getElementById("popupContainer");
       const loginForm = document.getElementById("loginForm");
       const signupForm = document.getElementById("signupForm");
@@ -77,7 +91,7 @@ function updateProgressBar() {
       popup.style.display = "flex";
       loginForm.style.display = "flex";
       signupForm.style.display = "none";
-    });
+    };
   }
 }
 
@@ -95,21 +109,21 @@ function initPopup() {
   loginForm.style.display = 'flex';
   signupForm.style.display = 'none';
 
-  if (closePopup) closePopup.addEventListener('click', () => popup.style.display = 'none');
-  window.addEventListener('click', e => { if (e.target === popup) popup.style.display = 'none'; });
+  if (closePopup) closePopup.onclick = () => popup.style.display = 'none';
+  window.onclick = e => { if (e.target === popup) popup.style.display = 'none'; };
 
-  if (showSignup) showSignup.addEventListener('click', e => {
+  if (showSignup) showSignup.onclick = e => {
     e.preventDefault();
     loginForm.style.display = 'none';
     signupForm.style.display = 'flex';
-  });
-  if (showLogin) showLogin.addEventListener('click', e => {
+  };
+  if (showLogin) showLogin.onclick = e => {
     e.preventDefault();
     signupForm.style.display = 'none';
     loginForm.style.display = 'flex';
-  });
+  };
 
-  // Signup
+  // --- Signup ---
   signupForm.addEventListener('submit', e => {
     e.preventDefault();
     const email = signupForm.querySelector('input[type="email"]').value.trim();
@@ -131,7 +145,7 @@ function initPopup() {
     initHeader();
   });
 
-  // Login
+  // --- Login ---
   loginForm.addEventListener('submit', e => {
     e.preventDefault();
     const email = loginForm.querySelector('input[type="email"]').value.trim();
@@ -152,6 +166,3 @@ function initPopup() {
 fetch("/html/include/footer.html")
   .then(res => res.text())
   .then(data => document.getElementById("footer").innerHTML = data);
-
-// --- Start ---
-loadHeader();
