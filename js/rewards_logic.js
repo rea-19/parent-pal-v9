@@ -70,10 +70,3 @@ waitForProgressBar((progress) => {
   // --- INITIALIZE ---
   updateProgressBar();
 });
-
-
-// MEMBERSHIP CARD
-function flipCard() {
-  const card = document.getElementById("membershipCard");
-  card.classList.toggle("flipped");
-}

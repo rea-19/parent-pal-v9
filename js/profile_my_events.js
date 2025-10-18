@@ -1,81 +1,57 @@
 $(document).ready(function() {
+    const bookedEvents = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
+    const favouriteEvents = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
 
-  // Load events from localStorage
-  function loadEvents() {
-    const booked = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
-    const favourites = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
+    const bookedContainer = $("#booked-events");
+    const favouriteContainer = $("#favourite-events");
 
-    const bookedContainer = $('#booked-events');
-    const favouriteContainer = $('#favourite-events');
+    function createEventCard(event, type) {
+        const card = $(`
+            <div class="event-card">
+                <img src="${event.eventimage || 'https://source.unsplash.com/featured/?event,library'}" 
+                     alt="${event.subject}" 
+                     class="event-image">
+                <h3>${event.subject}</h3>
+                <p>${event.description || "No description available."}</p>
+                <p><strong>Date:</strong> ${event.formatteddatetime || "N/A"}</p>
+                <p><strong>Location:</strong> ${event.location || "N/A"}</p>
+                <div class="card-buttons">
+                    <button class="view-details-btn">View Details</button>
+                    <button class="remove-btn">Remove</button>
+                </div>
+            </div>
+        `);
 
-    // Clear previous cards
-    bookedContainer.find('.event-card').remove();
-    favouriteContainer.find('.event-card').remove();
+        // View Details button
+        card.find(".view-details-btn").click(function() {
+            const url = `event_details.html?subject=${encodeURIComponent(event.subject)}&start=${encodeURIComponent(event.start_datetime)}&end=${encodeURIComponent(event.end_datetime)}`;
+            window.location.href = url;
+        });
 
-    // Render booked events
-    booked.forEach((event, index) => {
-      const card = $(`
-        <div class="event-card">
-          <h3>${event.subject}</h3>
-          <p>${event.description || "No description available"}</p>
-          <button class="delete-event" data-type="booked" data-index="${index}">Remove</button>
-        </div>
-      `);
-      bookedContainer.append(card);
-    });
+        // Remove button
+        card.find(".remove-btn").click(function() {
+            if (confirm(`Are you sure you want to remove "${event.subject}"?`)) {
+                let storageArray = JSON.parse(localStorage.getItem(type) || "[]");
+                storageArray = storageArray.filter(e => !(e.subject === event.subject && e.start_datetime === event.start_datetime));
+                localStorage.setItem(type, JSON.stringify(storageArray));
+                card.remove();
+            }
+        });
 
-    // Render favourite events
-    favourites.forEach((event, index) => {
-      const card = $(`
-        <div class="event-card">
-          <h3>${event.subject}</h3>
-          <p>${event.description || "No description available"}</p>
-          <button class="delete-event" data-type="favourite" data-index="${index}">Remove</button>
-        </div>
-      `);
-      favouriteContainer.append(card);
-    });
-
-    // Attach delete button click
-    $('.delete-event').off('click').on('click', function() {
-      const type = $(this).data('type');
-      const index = $(this).data('index');
-
-      if (type === "booked") {
-        let booked = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
-        booked.splice(index, 1); // remove the event at this index
-        localStorage.setItem("bookedEvents", JSON.stringify(booked));
-      } else if (type === "favourite") {
-        let favourites = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
-        favourites.splice(index, 1); // remove the event at this index
-        localStorage.setItem("favouriteEvents", JSON.stringify(favourites));
-      }
-
-      loadEvents(); // refresh UI
-    });
-  }
-
-  // Function to add events (called from event_details page)
-  window.addEvent = function(event, type) {
-    if (!event || !type) return;
-
-    if (type === "booked") {
-      let booked = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
-      if (!booked.find(e => e.subject === event.subject && e.start === event.start && e.end === event.end)) {
-        booked.push(event);
-        localStorage.setItem("bookedEvents", JSON.stringify(booked));
-      }
-    } else if (type === "favourite") {
-      let favourites = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
-      if (!favourites.find(e => e.subject === event.subject && e.start === event.start && e.end === event.end)) {
-        favourites.push(event);
-        localStorage.setItem("favouriteEvents", JSON.stringify(favourites));
-      }
+        return card;
     }
 
-    loadEvents();
-  }
+    // Populate booked events
+    if (bookedEvents.length === 0) {
+        bookedContainer.append("<p>No booked events yet.</p>");
+    } else {
+        bookedEvents.forEach(event => bookedContainer.append(createEventCard(event, "bookedEvents")));
+    }
 
-  // Initial load
-  loadEvents();
+    // Populate favourite events
+    if (favouriteEvents.length === 0) {
+        favouriteContainer.append("<p>No favourite events yet.</p>");
+    } else {
+        favouriteEvents.forEach(event => favouriteContainer.append(createEventCard(event, "favouriteEvents")));
+    }
 });

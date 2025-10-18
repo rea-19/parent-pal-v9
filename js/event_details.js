@@ -112,21 +112,33 @@ $(document).ready(function() {
 
                 // ------------------ BUTTON FUNCTIONALITY ------------------
 
-                // Book Now button functionality (using existing logic)
+                // Book Now button functionality
                 $("#book-now-btn").click(function() {
-                    if (bookingUrl) {
-                        window.open(bookingUrl, '_blank');
-                    } else {
-                        alert("Please visit Eventbrite or call the library to reserve your place.");
+                    // Instead of sending people to bookingUrl, we auto-save it in Booked Events
+                    const booked = JSON.parse(localStorage.getItem("bookedEvents") || "[]");
+
+                    // Prevent duplicates
+                    const alreadySaved = booked.some(e => e.subject === record.subject && e.start_datetime === record.start_datetime);
+                    if (!alreadySaved) {
+                        booked.push(record);
+                        localStorage.setItem("bookedEvents", JSON.stringify(booked));
                     }
+
+                    alert("There is no booking needed for this, but we saved it in your Booked Events for reference.");
                 });
 
-                // Save Event (repurposed from the original 'Save for Attendance'/'Save Booked')
+                // Save Event button functionality
                 $("#save-event-btn").click(function() {
-                    const saved = JSON.parse(localStorage.getItem("savedEvents") || "[]");
-                    saved.push(record);
-                    localStorage.setItem("savedEvents", JSON.stringify(saved));
-                    alert("Event saved!");
+                    const favourites = JSON.parse(localStorage.getItem("favouriteEvents") || "[]");
+
+                    // Prevent duplicates
+                    const alreadySaved = favourites.some(e => e.subject === record.subject && e.start_datetime === record.start_datetime);
+                    if (!alreadySaved) {
+                        favourites.push(record);
+                        localStorage.setItem("favouriteEvents", JSON.stringify(favourites));
+                    }
+
+                    alert("We saved it in your Saved Events, in your profile.");
                 });
 
                 // Copy Address
