@@ -1,4 +1,11 @@
-// --- WAIT UNTIL PROGRESS BAR EXISTS ---
+//AI (ChatGPT) has been used with this code, for the following purposes: 
+// 1. to simplify the code and remove irrelevant code
+// 2. to error-check or correct, or to give advice on where to check for problems
+// 3. to add base comments to explain what I'm doing. 
+// All base code is done by hand. AI changes have been changed and edited and have been used to improve, not to do the code itself. 
+
+
+// WAIT UNTIL PROGRESS BAR EXISTS 
 function waitForProgressBar(callback) {
   const checkExist = setInterval(() => {
     const progress = document.querySelector(".progress-done");
@@ -9,9 +16,9 @@ function waitForProgressBar(callback) {
   }, 100); // checks every 100ms
 }
 
-// --- WHEN FOUND, INITIALIZE EVERYTHING ---
+// WHEN FOUND, INITIALIZE 
 waitForProgressBar((progress) => {
-  console.log("✅ Progress bar found and ready!");
+  console.log("Progress bar ready");
 
   let userPoints = 0;
   let goal = 50;
@@ -40,13 +47,13 @@ waitForProgressBar((progress) => {
 
   window.resetPoints = function () {
     userPoints = 0;
-    console.log("Points reset.");
+    console.log("Points reset");
     updateProgressBar();
   };
 
   function checkGoal() {
     if (userPoints >= goal) {
-      console.log("🎉 Goal reached!");
+      console.log("Goal reached!");
     }
   }
 
@@ -67,6 +74,6 @@ waitForProgressBar((progress) => {
     });
   }
 
-  // --- INITIALIZE ---
+  // INITIALIZE
   updateProgressBar();
 });
